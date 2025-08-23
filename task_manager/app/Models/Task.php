@@ -12,4 +12,8 @@ class Task extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public function review () {
+        return $this->hasMany(Task::class);
+    }
 }

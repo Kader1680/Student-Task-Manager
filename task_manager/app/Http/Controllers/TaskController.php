@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -11,7 +12,12 @@ class TaskController extends Controller
     public function index(Project $project)
     {
         $tasks = $project->tasks;
+
+
+
         return view('projects.tasks.index', compact('project', 'tasks'));
+
+
 
     }
 

@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with('tasks')->get();
+        $id_auth = Auth::id();
+        $projects = Project::with('tasks')->where('user_id', $id_auth)->get();
         return view('projects.index', compact('projects'));
     }
 

@@ -25,6 +25,7 @@
             <td class="p-2 border">{{ $project->title }}</td>
             <td class="p-2 border">{{ $project->description }}</td>
             <td class="p-2 border">{{ $project->tasks->count() }}</td>
+        
             <td class="p-2 border flex gap-2">
                 <a href="{{ route('projects.edit',$project) }}" class="px-2 py-1 bg-yellow-500 text-white rounded">Edit</a>
                 <form method="POST" action="{{ route('projects.destroy',$project) }}">
