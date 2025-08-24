@@ -11,7 +11,7 @@
             <tr class="bg-gray-200 text-left">
                 <th class="p-2">Title</th>
                 <th class="p-2">Status</th>
-                <th class="p-2">Ask for help</th>
+                <th class="p-2">help</th>
                 <th class="p-2">Feedback</th>
                 <th class="p-2">Actions</th>
             </tr>
@@ -24,38 +24,18 @@
 
                     {{-- Ask for help --}}
                     <td class="p-2">
-                        <form action=" " method="POST" class="flex space-x-2">
-                            @csrf
-                            <select name="teacher" class="border rounded p-1">
-                                <option value="">Select Teacher</option>
-                                <option value="Mr. Smith">Mr. Smith</option>
-                                <option value="Mrs. Johnson">Mrs. Johnson</option>
-                                <option value="Dr. Brown">Dr. Brown</option>
-                            </select>
 
-                            <input type="text" name="message" placeholder="Message"
-                                   class="border rounded p-1" />
-
-                            <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded">
-                                Send
-                            </button>
-                        </form>
-                    </td>
+                            <a  href="{{ route("tasks.ask", [ $task->id] ) }}" class="bg-green-500 text-white px-2 py-1 rounded">
+Ask for Help
+</a>
+                     </td>
 
                     {{-- Teacher feedback (dummy data for now) --}}
                     <td class="p-2">
 
-                        @php
-                            // Fake feedback examples
-                            $feedbackSamples = [
-                                "Try to use CSS flex",
-                                "Add more comments in your code",
-                                "Good start, improve naming conventions",
-                                "Consider using a database relation here"
-                            ];
-                            $feedback = $feedbackSamples[array_rand($feedbackSamples)];
-                        @endphp
-                        <span class="text-sm text-gray-700 italic">{{ $feedback }}</span>
+
+
+
                     </td>
 
                     {{-- Actions --}}

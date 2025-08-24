@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HelpController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TeacherDashboardController;
@@ -15,7 +16,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::resource('projects', ProjectController::class);
-Route::resource('projects.tasks', TaskController::class);
+    Route::resource('projects.tasks', TaskController::class);
+
 
 });
 
@@ -36,20 +38,34 @@ Route::post('/dashboard-teacher', [TeacherDashboardController::class, 'storeRevi
     ->middleware(['auth', 'role:teacher'])
     ->name("teacher.dashboard");
 
-
+Route::get("/", function(){
+    return view("home");
+});
 //  Route::post('/dashboard-teacher', [TeacherDashboardController::class, 'storeProject'])->middleware(['auth', 'role:teacher'])->name("teacher.dashboard");
 
 
-// Route::middleware(['auth', 'role:teacher'])->group(function () {
-// Route::get('/dashboard-teacher', [TeacherDashboardController::class, 'index'])->name('teacher.dashboard');
-// Route::post('/projects', [TeacherDashboardController::class, 'storeProject'])->name('projects.store');
-// Route::post('/tasks/{task}/reviews', [TeacherDashboardController::class, 'storeReview'])->name('tasks.reviews.store');
-// Route::post('/tasks/{task}/help', [TeacherDashboardController::class, 'storeHelp'])->name('tasks.help.store');
-// });
+Route::middleware(['auth', 'role:teacher'])->group(function () {
+Route::get('/dashboard-teacher', [TeacherDashboardController::class, 'index'])->name('teacher.dashboard');
+Route::post('/projects', [TeacherDashboardController::class, 'storeProject'])->name('projects.store');
+Route::post('/tasks/{task}/reviews', [TeacherDashboardController::class, 'storeReview'])->name('tasks.reviews.store');
+Route::post('/tasks/{task}/help', [TeacherDashboardController::class, 'storeHelp'])->name('tasks.help.store');
+});
 
 
-Route::get('/dashboard-student  ',
+Route::get('/dashboard-student',
 function () {
     return "helow from teacher dashboard ";
 }
 )->middleware(['auth', 'role:student']);
+
+
+
+
+Route::middleware(['auth', 'role:student'])->group(function () {
+    Route::get('/tasks/{id}/ask', [TaskController::class, 'askView'])->name('tasks.ask');
+
+    Route::post('/tasks/{id}/ask', [TaskController::class, 'ask'])->name('tasks.ask');
+    Route::get('/helps', [HelpController::class, 'all_helps']);
+
+    
+});

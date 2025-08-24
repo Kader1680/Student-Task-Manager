@@ -7,6 +7,10 @@
             <a href="{{ route('projects.tasks.index', $project->id) }}" class="text-blue-500">View Tasks</a>
         @endif
 
+         @if(auth()->user()->role === 'student')
+                <li><a href="/dashboard-student" class="text-purple-600">Student Panel</a></li>
+                <li><a href="/helps" class="text-green-600">All Helps</a></li>
+        @endif
         @auth
             <li><a href="{{ route('profile') }}" class="hover:text-blue-600">Profile</a></li>
 
@@ -15,16 +19,15 @@
                 <button type="submit">Logout</button>
             </form>
 
-          
+
 
             @if(auth()->user()->role === 'teacher')
                 <li><a href="/dashboard-teacher" class="text-green-600">Teacher Panel</a></li>
+
+
             @endif
 
-            {{-- Student only --}}
-            @if(auth()->user()->role === 'student')
-                <li><a href="{{ route('teacher.dashboard') }}" class="text-purple-600">Student Panel</a></li>
-            @endif
+
 
         @else
             <li><a href="{{ route('login') }}">Login</a></li>

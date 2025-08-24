@@ -13,7 +13,13 @@ class Task extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function review () {
-        return $this->hasMany(Task::class);
+   public function reviews()
+    {
+        return $this->hasMany(Review::class, 'task_id', 'id');
+    }
+
+  public function helps()
+    {
+        return $this->hasMany(Help::class);
     }
 }
