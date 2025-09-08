@@ -27,7 +27,8 @@ class ProjectController extends Controller
         Project::create([
             'title'=>$request->title,
             'description'=>$request->description,
-            'user_id'=>auth()->id()
+            'user_id'=>Auth::id(),
+            'teacher_id'  => null
         ]);
         return redirect()->route('projects.index')->with('success','Project created');
     }

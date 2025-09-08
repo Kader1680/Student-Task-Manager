@@ -9,41 +9,38 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    // Show register form
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    // Handle register
     public function register(Request $request)
     {
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'role'     => 'in:student,teacher'
+            'role' => 'required|string',
+            'password' => 'required|string|confirmed',
         ]);
 
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
+            'role'    => $request->role,
             'password' => Hash::make($request->password),
-            'role'     => $request->role ?? 'teacher',
         ]);
 
-        Auth::login($user); // auto login after register
+        Auth::login($user); 
 
-        return redirect()->route('auth.profile')->with('success', 'Registration successful! Welcome.');
+        return redirect()->route('profile')->with('success', 'Registration successful! Welcome.');
     }
 
-    // Show login form
+  
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    // Handle login
     public function login(Request $request)
     {
         $request->validate([
@@ -59,6 +56,7 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Invalid credentials.',
         ])->onlyInput('email');
+
     }
 
     // Logout
@@ -74,11 +72,12 @@ Auth::guard('web')->logout();
 
 
     return redirect()->route('login')->with('success', 'You have been logged out.');
-}
-
-
+    }
+    
     public function profile()
     {
         return view('auth.profile');
     }
+
+    
 }

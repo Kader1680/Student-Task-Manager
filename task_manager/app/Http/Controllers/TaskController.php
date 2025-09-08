@@ -32,9 +32,13 @@ class TaskController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'reminder_at' => 'nullable|date|after:now',
+
         ]);
 
-        $project->tasks()->create($request->only('title', 'description'));
+
+
+$project->tasks()->create($request->only('title', 'description', 'reminder_at'));
 
         return redirect()->route('projects.tasks.index', $project)
                          ->with('success', 'Task created successfully.');
@@ -52,19 +56,20 @@ class TaskController extends Controller
         return view('projects.tasks.help.ask', compact( 'task', 'teachers'));
     }
 
-   public function ask(Request $request, Project $project, Task $task)
+   public function ask(Request $request, $id, Project $project,)
 {
     $student_id = Auth::id();
+    $task = Task::findOrFail($id);
 
     Help::create([
-        'task_id'   => 2,        // current task id
+        'task_id'   => $task->id,
         'student_id'=> $student_id,
         'content' =>   $request->content,
-        'teacher_id'=> $request->teacher_id, // selected teacher
+        'teacher_id'=> $request->teacher_id,
     ]);
 
-    return redirect()
-        ->route('project.home', $project)
+    return redirect("/helps")
+
         ->with('success', 'Help request sent successfully.');
 }
 
@@ -75,12 +80,15 @@ class TaskController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|in:pending,in_progress,completed',
+            'status' => 'required|in:pending,progress,completed',
+
+            'reminder_at' => 'nullable|date|after:now',
+
         ]);
 
-        $task->update($request->only('title', 'description', 'status'));
+        $task->update($request->only('title', 'description', 'status', 'reminder_at'));
 
-        return redirect()->route('projects.tasks.index')
+        return redirect()->route('projects.tasks.index', $project->id)
                          ->with('success', 'Task updated successfully.');
     }
 

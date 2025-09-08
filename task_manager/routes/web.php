@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TeacherDashboardController;
 
@@ -15,15 +16,23 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::resource('projects', ProjectController::class);
-    Route::resource('projects.tasks', TaskController::class);
 
+
+
+});
+
+Route::middleware(['auth', 'role:student'])->group(function () {
+
+   Route::resource('projects', ProjectController::class);
+   Route::resource('projects.tasks', TaskController::class);
 
 });
 
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/', [AuthController::class, 'login']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -38,25 +47,14 @@ Route::post('/dashboard-teacher', [TeacherDashboardController::class, 'storeRevi
     ->middleware(['auth', 'role:teacher'])
     ->name("teacher.dashboard");
 
-Route::get("/", function(){
-    return view("home");
-});
-//  Route::post('/dashboard-teacher', [TeacherDashboardController::class, 'storeProject'])->middleware(['auth', 'role:teacher'])->name("teacher.dashboard");
-
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
 Route::get('/dashboard-teacher', [TeacherDashboardController::class, 'index'])->name('teacher.dashboard');
-Route::post('/projects', [TeacherDashboardController::class, 'storeProject'])->name('projects.store');
+Route::post('/teacher-project', [TeacherDashboardController::class, 'storeProject'])->name('teacher.store');
 Route::post('/tasks/{task}/reviews', [TeacherDashboardController::class, 'storeReview'])->name('tasks.reviews.store');
 Route::post('/tasks/{task}/help', [TeacherDashboardController::class, 'storeHelp'])->name('tasks.help.store');
 });
 
-
-Route::get('/dashboard-student',
-function () {
-    return "helow from teacher dashboard ";
-}
-)->middleware(['auth', 'role:student']);
 
 
 
@@ -64,8 +62,28 @@ function () {
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/tasks/{id}/ask', [TaskController::class, 'askView'])->name('tasks.ask');
 
-    Route::post('/tasks/{id}/ask', [TaskController::class, 'ask'])->name('tasks.ask');
-    Route::get('/helps', [HelpController::class, 'all_helps']);
+    Route::post('/tasks/{id}/ask', [TaskController::class, 'ask'])->name('tasks.ask.store');
+     Route::get('/helps', [HelpController::class, 'helps_student']);
 
-    
 });
+
+
+Route::middleware(['auth', 'role:teacher'])->group(function () {
+    Route::get('/helps-teacher', [HelpController::class, 'helps_teacher']);
+    Route::get('/helps-teacher/{help}/reply', [HelpController::class, 'viewrepley'])->name("helps-teacher.reply.form");
+    Route::put('/helps-teacher/{help}/reply', [HelpController::class, 'repley'])->name("helps-teacher.reply");
+
+});
+
+
+
+// ...existing code...
+Route::middleware(['auth', 'role:student'])->prefix('tasks/{task}')->group(function () {
+    Route::get('subtasks', [SubtaskController::class, 'index'])->name('tasks.subtasks.index');
+    Route::get('subtasks/create', [SubtaskController::class, 'create'])->name('tasks.subtasks.create');
+    Route::post('subtasks', [SubtaskController::class, 'store'])->name('tasks.subtasks.store');
+    Route::get('subtasks/{subtask}/edit', [SubtaskController::class, 'edit'])->name('tasks.subtasks.edit');
+    Route::put('subtasks/{subtask}', [SubtaskController::class, 'update'])->name('tasks.subtasks.update');
+    Route::delete('subtasks/{subtask}', [SubtaskController::class, 'destroy'])->name('tasks.subtasks.destroy');
+});
+// ...existing code...

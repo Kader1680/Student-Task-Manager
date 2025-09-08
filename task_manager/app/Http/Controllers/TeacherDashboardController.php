@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\User;
 use App\Models\Task;
 use App\Models\Project;
@@ -15,9 +14,9 @@ class TeacherDashboardController extends Controller{
 public function index(){
 $students = User::query()->where('role', 'student')->orderBy('name')->get(['id','name']);
 $tasks = Task::query()->latest()->get(['id','title']);
-
-
-return view('teacher.dashboard', compact('students','tasks'));
+$reviews = Review::with("tasks")->get();
+$projects = Project::with("users")->where("teacher_id", Auth::id())->get();
+return view('teacher.dashboard', compact('students','tasks', 'reviews', 'projects'));
 }
 
 
@@ -33,12 +32,12 @@ $validated = $request->validate([
 ]);
 
 
-
-$project = Project::create([
+$teacher_id = Auth::user()->id;
+Project::create([
 'title' => $validated['title'],
 'description' => $validated['description'] ?? null,
 'user_id' => $validated['user_id'],
-
+'teacher_id'  => $teacher_id,
 ]);
 
 

@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->unsignedBigInteger('user_id');
- 
-            $table->timestamps();
+        Schema::table('tasks', function (Blueprint $table) {
+             $table->timestamp('reminder_at')->nullable()->after('status');
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->dropColumn('reminder_at');
+        });
     }
 };

@@ -1,17 +1,27 @@
 <nav class="bg-white shadow p-4 flex justify-between">
     <a href="/" class="font-bold text-xl">Tasky</a>
     <ul class="flex gap-4">
-        <li><a href="{{ route('projects.index') }}" class="hover:text-blue-600">Projects</a></li>
 
-        @if(isset($project))
-            <a href="{{ route('projects.tasks.index', $project->id) }}" class="text-blue-500">View Tasks</a>
-        @endif
 
-         @if(auth()->user()->role === 'student')
-                <li><a href="/dashboard-student" class="text-purple-600">Student Panel</a></li>
-                <li><a href="/helps" class="text-green-600">All Helps</a></li>
-        @endif
+
+
         @auth
+         @if(auth()->user()->role === 'student')
+                @if(session('notification'))
+                    <div class="bg-green-100 text-g-700 px-4 py-2 rounded mb-3">
+                        {{ session('notification') }}
+                    </div>
+                @endif
+
+
+                <li><a href="/helps" class="text-green-600">All Helps</a></li>
+
+                <li><a href="{{ route('projects.index') }}" class="hover:text-blue-600">Projects</a></li>
+                @if(isset($project))
+                 <a href="{{ route('projects.tasks.index', $project->id) }}" class="text-blue-500">View Tasks</a>
+                  @endif
+         @endif
+
             <li><a href="{{ route('profile') }}" class="hover:text-blue-600">Profile</a></li>
 
             <form method="POST" action="{{ route('logout') }}">
@@ -22,8 +32,9 @@
 
 
             @if(auth()->user()->role === 'teacher')
-                <li><a href="/dashboard-teacher" class="text-green-600">Teacher Panel</a></li>
+                <li><a href="/dashboard-teacher" class="text-yellow-600">Teacher Panel</a></li>
 
+                <li><a href="/helps-teacher" class="text-green-600">All Helps</a></li>
 
             @endif
 
