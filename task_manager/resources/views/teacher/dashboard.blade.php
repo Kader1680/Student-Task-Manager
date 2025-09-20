@@ -5,32 +5,51 @@
 
      <div class="rounded-2xl bg-white p-6 shadow">
         <h2 class="mb-4 text-lg font-semibold">Create Project for Student</h2>
-        <form action="{{route("teacher.store")}}" method="POST" class="space-y-4">
-            @csrf
+        <form action="{{ route('teacher.store') }}" method="POST" class="space-y-4">
+        @csrf
 
 
 
-            <div>
-                <label for="user_id" class="mb-1 block text-sm font-medium">Select Student</label>
-                <select name="user_id" class="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring" required>
-                    <option value="">Choose a student…</option>
-                    @foreach($students as $s)
-                        <option  value="{{ $s['id'] }}">{{ $s['name'] }}</option>
-                    @endforeach
-                </select>
-            </div>
+        <div>
+            <label for="title" class="mb-1 block text-sm font-medium">Project Title</label>
+            <input
+                type="text"
+                name="title"
+                class="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring"
+                placeholder="Project title"
+                required>
+        </div>
 
-            <div>
-                <label for="title" class="mb-1 block text-sm font-medium">Project Title</label>
-                <input type="text" name="title" class="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring" placeholder="Project title">
-            </div>
 
-            <button type="submit"  class="w-full rounded-2xl bg-sky-600 px-4 py-2 font-medium text-white shadow hover:bg-sky-700">Create Project</button>
-        </form>
+ <div>
+            <label for="description" class="mb-1 block text-sm font-medium">Description Title</label>
+            <input
+                type="textarea"
+                name="description"
+                class="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring"
+                placeholder="Project Description"
+                required>
+        </div>
+
+        <div>
+            <label for="deadline" class="mb-1 block text-sm font-medium">Deadline</label>
+            <input
+                type="datetime-local"
+                name="deadline"
+                id="deadline"
+                class="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring">
+        </div>
+
+        <button type="submit"
+            class="w-full rounded-2xl bg-sky-600 px-4 py-2 font-medium text-white shadow hover:bg-sky-700">
+            Create Project
+        </button>
+    </form>
+
 
         <div class="mt-6 space-y-6">
     <h3 class="text-xl font-bold text-gray-800">
-        Created Projects ({{ $projects->count() }})
+        Created Projects ({{ $projects->count()  }})
     </h3>
 
     @foreach($projects as $p)
@@ -40,25 +59,27 @@
               Project title :<span class="text-md font-semibold text-green-700"> {{ $p->title }}</span>
             </h4>
 
-            <!-- Students list -->
-            <div>
-                <h5 class="text-sm font-medium text-gray-600 mb-2">Students:</h5>
-                @if($p->users)
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full">
-                            {{ $p->users->name }}
-                        </span>
-                    </div>
-                @else
-                    <p class="text-sm text-gray-500 italic">No students assigned</p>
-                @endif
-            </div>
+  <h4 class="text-lg font-semibold text-black-700 mb-4">
+              Project Description :<span class="text-md font-semibold text-green-700"> {{ $p->description }}</span>
+            </h4>
+            <h4 class="text-lg font-semibold text-black-700 mb-4">
+                Deadline :
+                <span class="text-md font-semibold text-green-700" id="deadline-{{ $p->id }}">
+                    {{ $p->deadline }}
+                </span>
+                <span class="text-md font-semibold text-blue-700" id="timeleft-{{ $p->id }}"></span>
+            </h4>
+
+<div>
+<a class=" p-2 rounded-circle  bg-yellow-200" href="{{ route("project.download", $p->id) }}">Download <i class="fa-solid fa-file-pdf"></i></a>
+</div>
+
+
         </div>
     @endforeach
 </div>
 
     </div>
-
 
     {{-- Review Task --}}
     <div class="rounded-2xl bg-white p-6 shadow">
@@ -102,8 +123,11 @@
 
 </div>
 
-{{-- Tiny script to switch form action dynamically --}}
 <script>
+
+
+
+
 const reviewSelect = document.getElementById('review-task-select');
 const reviewForm = document.getElementById('review-form');
 if (reviewSelect && reviewForm) {
@@ -119,5 +143,40 @@ if (helpSelect && helpForm) {
         helpForm.action = e.target.value || helpForm.action;
     });
 }
+
+    function timeLeft(deadline) {
+        const now = new Date();
+        const end = new Date(deadline);
+
+        let diff = end - now; // difference in ms
+
+        if (diff <= 0) {
+            return "Expired";
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        diff -= days * (1000 * 60 * 60 * 24);
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+
+        if (days > 0 && hours > 0) {
+            return `${days} day${days > 1 ? "s" : ""} ${hours}h`;
+        } else if (days > 0) {
+            return `${days} day${days > 1 ? "s" : ""}`;
+        } else {
+            return `${hours}h`;
+        }
+    }
+
+     document.addEventListener("DOMContentLoaded", function () {
+        const deadline = document.getElementById("deadline-{{ $p->id ?? 1 }}").innerText;
+        const result = timeLeft(deadline);
+        document.getElementById("timeleft-{{ $p->id ?? 1  }}").innerText = ` (${result})`;
+    });
+
+
+
+
+
 </script>
 @endsection

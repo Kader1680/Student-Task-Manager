@@ -13,7 +13,8 @@ class ProjectController extends Controller
     {
         $id_auth = Auth::id();
         $projects = Project::with('tasks')->where('user_id', $id_auth)->get();
-        return view('projects.index', compact('projects'));
+        $projectByTeacher = Project::with('tasks')->where('user_id', null)->get();
+        return view('projects.index', compact('projects', "projectByTeacher"));
     }
 
     public function create()
@@ -23,10 +24,15 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['title'=>'required']);
+        $request->validate([
+
+            'title'=>'required',
+
+        ]);
         Project::create([
             'title'=>$request->title,
             'description'=>$request->description,
+            'deadline'=>$request->deadline,
             'user_id'=>Auth::id(),
             'teacher_id'  => null
         ]);

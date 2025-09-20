@@ -17,6 +17,13 @@
             <textarea name="description" class="w-full border p-2 rounded"></textarea>
         </div>
 
+
+        <div>
+            <label class="block mb-1 font-semibold">Deadline</label>
+            <input type="datetime-local" name="deadline" class="w-full border p-2 rounded">
+            @error('deadline') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+        </div>
+
         <button class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
         <a href="{{ route('projects.index') }}" class="px-4 py-2 bg-gray-400 text-white rounded">Cancel</a>
     </form>

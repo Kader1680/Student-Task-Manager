@@ -61,6 +61,11 @@ class User extends Authenticatable
     }
 
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
     public function subtasks()
     {
         return $this->hasMany(Subtask::class);
@@ -69,4 +74,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Project::class);
     }
+
+     public function studentHelps()
+    {
+        return $this->hasMany(Help::class, 'student_id');
+    }
+
+    public function teacherHelps()
+    {
+        return $this->hasMany(Help::class, 'teacher_id');
+    }
+
 }

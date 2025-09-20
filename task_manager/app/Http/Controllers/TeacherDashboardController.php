@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\Review;
-use App\Models\HelpRequest;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,8 +27,9 @@ public function storeProject(Request $request)
 $validated = $request->validate([
 'title' => ['required','string','max:255'],
 'description' => ['nullable','string'],
+'deadline' => ['date','after:now'],
 
-'user_id' => ['required'],
+// 'user_id' => ['required'],
 ]);
 
 
@@ -36,8 +37,9 @@ $teacher_id = Auth::user()->id;
 Project::create([
 'title' => $validated['title'],
 'description' => $validated['description'] ?? null,
-'user_id' => $validated['user_id'],
+
 'teacher_id'  => $teacher_id,
+'deadline'  => $validated['deadline'],
 ]);
 
 
@@ -65,7 +67,31 @@ public function storeReview(Request $request)
 
 
 
+        public function traking()
+        {
 
+        $traking = Task::with('project')->get();
+
+        return view('teacher.traking', compact('traking'));
+
+
+        }
+
+
+public function studentsAll()
+    {
+
+        $students = User::with(['projects.tasks'])->get();
+
+        return view('teacher.students', compact('students'));
+    }
+
+    public function showTasks($id)
+    {
+        $student = User::with(['projects.tasks'])->findOrFail($id);
+
+        return view('teacher.tasks', compact('student'));
+    }
 
 
 }

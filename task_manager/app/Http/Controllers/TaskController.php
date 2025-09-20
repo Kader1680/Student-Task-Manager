@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
-    public function index(Project $project, Request $request)
+
+     public function index(Project $project, Request $request)
     {
 
         $tasks = $project->tasks()->with('reviews')->get();
@@ -38,7 +39,7 @@ class TaskController extends Controller
 
 
 
-$project->tasks()->create($request->only('title', 'description', 'reminder_at'));
+    $project->tasks()->create($request->only('title', 'description', 'reminder_at'));
 
         return redirect()->route('projects.tasks.index', $project)
                          ->with('success', 'Task created successfully.');

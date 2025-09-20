@@ -34,18 +34,11 @@ public function subtasks()
     return $this->hasMany(Subtask::class);
 }
 
+  public function help()
+    {
+        return $this->hasMany(Help::class);
+    }
 
-protected static function boot()
-{
-    parent::boot();
-
-    static::saved(function ($task) {
-        if ($task->reminder_at) {
-            SendTaskReminder::dispatch($task)
-                ->delay($task->reminder_at);
-        }
-    });
-}
 
 
 }

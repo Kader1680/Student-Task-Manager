@@ -22,8 +22,9 @@ class SubtaskController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'reminder_at' => 'required|date|after:now',
         ]);
-        $task->subtasks()->create($request->only('title'));
+        $task->subtasks()->create($request->only('title', 'reminder_at'));
         return redirect()->route('tasks.subtasks.index', $task)->with('success', 'Subtask created!');
     }
 
@@ -37,8 +38,9 @@ class SubtaskController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'status' => 'required|string',
+            'reminder_at' => 'required|date|after:now',
         ]);
-        $subtask->update($request->only('title', 'status'));
+        $subtask->update($request->only('title', 'status', 'reminder_at'));
         return redirect()->route('tasks.subtasks.index', $task)->with('success', 'Subtask updated!');
     }
 

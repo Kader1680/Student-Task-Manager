@@ -21,7 +21,7 @@
                         <th class="p-3 text-left border">Title</th>
                         <th class="p-3 text-center border">Status</th>
                         <th class="p-3 text-center border">Help</th>
-                        <th class="p-3 text-center border">Reminder</th>
+                        <th class="p-3 text-center border">Deadline</th>
                         <th class="p-3 text-center border"> View Subtasks</th>
 
                         <th class="p-3 text-center border">Actions</th>
@@ -46,13 +46,29 @@
                             </td>
 
 
-                            <td class="p-3 border text-center text-gray-600">
-                                @if($task->reminder_at)
-                                    {{ $task->reminder_at->format('d M Y, H:i') }}
+                                                <td class="p-3 border text-center text-gray-600">
+                            @if($task->reminder_at)
+                                @php
+                                    $now = \Carbon\Carbon::now();
+                                    $diffInMinutes = $now->diffInMinutes($task->reminder_at, false);
+                                @endphp
+
+                                @if ($diffInMinutes < 0)
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-lg bg-red-100 text-red-700">
+                                        Expired
+                                    </span>
+                                @elseif ($diffInMinutes < 60)
+                                    {{ $diffInMinutes }} min
+                                @elseif ($diffInMinutes < 1440)
+                                    {{ floor($diffInMinutes / 60) }}h
                                 @else
-                                    <span class="text-gray-400">No reminder</span>
+                                    {{ floor($diffInMinutes / 1440) }}d
                                 @endif
-                            </td>
+                            @else
+                                <span class="text-gray-400">No reminder</span>
+                            @endif
+                        </td>
+
 
                             <td class="p-3 border text-center">
                                 <a href="{{ route('tasks.subtasks.index', $task) }}"
