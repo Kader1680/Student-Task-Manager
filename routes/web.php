@@ -14,14 +14,9 @@ use App\Http\Controllers\TeacherDashboardController;
 use App\Models\Project;
 
 Route::middleware('auth:sanctum')->group(function () {
+
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-
-
-
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-
-
 
 });
 
@@ -33,7 +28,7 @@ Route::middleware(['auth', 'role:student'])->group(function () {
 });
 
 
-// Auth
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/', [AuthController::class, 'login']);
@@ -42,14 +37,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
-// Teacher Dashboard
+
 Route::get('/dashboard-teacher', [TeacherDashboardController::class, 'index'])->middleware(['auth', 'role:teacher'])->name("teacher.dashboard");
-//
+
 
 
 Route::post('/dashboard-teacher', [TeacherDashboardController::class, 'storeReview'])
     ->middleware(['auth', 'role:teacher'])
-    ->name("teacher.dashboard");
+    ->name("teacher.dashboard.review");
 
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
@@ -76,20 +71,13 @@ Route::post('/tasks/{task}/help', [TeacherDashboardController::class, 'storeHelp
 
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/tasks/{id}/ask', [TaskController::class, 'askView'])->name('tasks.ask');
-
-
     Route::get('/projects/{project}/calendar/events', [ProjectController::class, 'calendarEvents'])->name('projects.calendar.events');
-
-
-
     Route::post('/tasks/{id}/ask', [TaskController::class, 'ask'])->name('tasks.ask.store');
-     Route::get('/helps', [HelpController::class, 'helps_student']);
-
-  Route::get('/projects/{project}/student/calendar', [CalendarController::class, 'index'])
+    Route::get('/helps', [HelpController::class, 'helps_student']);
+    Route::get('/projects/{project}/student/calendar', [CalendarController::class, 'index'])
     ->name('projects.student.calendar');
-
-Route::get('/projects/{project}/calendar/events', [CalendarController::class, 'calendarEvents'])
-    ->name('projects.calendar.events');
+    Route::get('/projects/{project}/calendar/events', [CalendarController::class, 'calendarEvents'])
+        ->name('projects.calendar.events');
 
 });
 
@@ -98,23 +86,11 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
     Route::get('/helps-teacher', [HelpController::class, 'helps_teacher']);
     Route::get('/helps-teacher/{help}/reply', [HelpController::class, 'viewrepley'])->name("helps-teacher.reply.form");
     Route::put('/helps-teacher/{help}/reply', [HelpController::class, 'repley'])->name("helps-teacher.reply");
-
-
-
-
-
-
-
-
-
     Route::get('/project/{id}/download', [InvoiceController::class, 'generateInvoicePdf'])->name("project.download");
-
-
 });
 
 
 
-// ...existing code...
 Route::middleware(['auth', 'role:student'])->prefix('tasks/{task}')->group(function () {
     Route::get('subtasks', [SubtaskController::class, 'index'])->name('tasks.subtasks.index');
     Route::get('subtasks/create', [SubtaskController::class, 'create'])->name('tasks.subtasks.create');
@@ -128,7 +104,7 @@ Route::middleware(['auth', 'role:student'])->prefix('tasks/{task}')->group(funct
 
 });
 
- use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotification;
 
 Route::post('/notification/delete', function (\Illuminate\Http\Request $request) {
     $user = Auth::user();
@@ -140,7 +116,7 @@ Route::post('/notification/delete', function (\Illuminate\Http\Request $request)
         $notification->delete();
     }
 
-    return back(); // redirect back to previous page
+    return back();  
 })->name('delete');
 
 

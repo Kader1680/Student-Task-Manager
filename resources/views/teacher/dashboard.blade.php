@@ -44,6 +44,7 @@
             class="w-full rounded-2xl bg-sky-600 px-4 py-2 font-medium text-white shadow hover:bg-sky-700">
             Create Project
         </button>
+        
     </form>
 
 
@@ -70,9 +71,9 @@
                 <span class="text-md font-semibold text-blue-700" id="timeleft-{{ $p->id }}"></span>
             </h4>
 
-<div>
-<a class=" p-2 rounded-circle  bg-yellow-200" href="{{ route("project.download", $p->id) }}">Download <i class="fa-solid fa-file-pdf"></i></a>
-</div>
+            <div>
+                <a class=" p-2 rounded-circle  bg-yellow-200" href="{{ route("project.download", $p->id) }}">Download <i class="fa-solid fa-file-pdf"></i></a>
+            </div>
 
 
         </div>
@@ -81,10 +82,9 @@
 
     </div>
 
-    {{-- Review Task --}}
     <div class="rounded-2xl bg-white p-6 shadow">
         <h2 class="mb-4 text-lg font-semibold">Add Review on Task</h2>
-        <form action="{{route("teacher.dashboard")}}" method="POST" class="space-y-4"  >
+        <form action="{{route("teacher.dashboard.review")}}" method="POST" class="space-y-4"  >
             @csrf
 
 
